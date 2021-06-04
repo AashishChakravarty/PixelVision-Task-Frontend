@@ -24,7 +24,15 @@ class Home extends Component {
         'Authorization': 'Bearer ' + this.state.user.token
       },
     })
-      .then(response => response.json())
+      .then(response => {
+        if (response.status === 401) {
+          localStorage.clear();
+          this.props.history.push('/login');
+          toast.error('Unauthorized User. Please Login Again');
+        } else {
+          return response.json()
+        }
+      })
       .then(response => {
         if (response.status) {
           this.setState({ backDate: response.data })
